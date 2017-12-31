@@ -5,9 +5,9 @@ using Eigen::VectorXd;
 using Eigen::MatrixXd;
 using std::vector;
 
-Tools::Tools() {}
+Tools::Tools() { rmse_fs_.open("rmse.csv"); }
 
-Tools::~Tools() {}
+Tools::~Tools() { rmse_fs_.close(); }
 
 VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
                               const vector<VectorXd> &ground_truth) {
@@ -42,6 +42,9 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 
   // calculate the squared root
   rmse = rmse.array().sqrt();
+
+  // save rmse for analysis
+  rmse_fs_ << rmse << std::endl;
 
   return rmse;
 }

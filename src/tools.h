@@ -1,6 +1,8 @@
 #ifndef TOOLS_H_
 #define TOOLS_H_
 #include "Eigen/Dense"
+#include <fstream>
+#include <iostream>
 #include <vector>
 
 using Eigen::MatrixXd;
@@ -9,6 +11,11 @@ using namespace std;
 
 class Tools {
 public:
+  /**
+   * A file stream to save the RMSE values.
+   */
+  std::ofstream rmse_fs_;
+
   /**
   * Constructor.
   */

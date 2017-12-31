@@ -87,6 +87,13 @@ public:
   virtual ~UKF();
 
   /**
+   * SetProcessNoise
+   * @param a The std_a noise value
+   * @param b The std_yawdd noise value
+   */
+  void SetProcessNoise(float a, float b);
+
+  /**
    * ProcessMeasurement
    * @param meas_package The latest measurement data of either radar or laser
    */

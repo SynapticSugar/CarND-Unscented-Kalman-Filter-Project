@@ -37,10 +37,10 @@ UKF::UKF() {
   weights_ = VectorXd(2 * n_aug_ + 1);
 
   // Process noise standard deviation longitudinal acceleration in m/s^2
-  std_a_ = 2;
+  std_a_ = 1;
 
   // Process noise standard deviation yaw acceleration in rad/s^2
-  std_yawdd_ = 0.3;
+  std_yawdd_ = 0.7;
 
   // Laser measurement noise standard deviation position1 in m
   std_laspx_ = 0.15;
@@ -64,9 +64,9 @@ UKF::UKF() {
   P_ = MatrixXd::Identity(n_x_, n_x_);
   P_(0, 0) = 1.0;
   P_(1, 1) = 1.0;
-  P_(2, 2) = 1; // 3.6;
-  P_(3, 3) = 1; // 2 * M_PI;
-  P_(4, 4) = 1; // M_PI / 8;
+  P_(2, 2) = 10.0;
+  P_(3, 3) = 1.0;
+  P_(4, 4) = M_PI / 8;
 
   // laser measurement function
   H_ = MatrixXd::Zero(2, 5);
@@ -96,6 +96,11 @@ float Wrap2pi(float rval) {
     rval += 2 * M_PI;
   }
   return rval;
+}
+
+void UKF::SetProcessNoise(float a, float b) {
+  std_a_ = a;
+  std_yawdd_ = b;
 }
 
 /**

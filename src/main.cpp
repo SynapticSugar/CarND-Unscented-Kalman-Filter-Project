@@ -25,11 +25,13 @@ std::string hasData(std::string s) {
   return "";
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   uWS::Hub h;
 
   // Create a Kalman Filter instance
   UKF ukf;
+  if (argc > 2)
+    ukf.SetProcessNoise(atof(argv[1]), atof(argv[2]));
 
   // used to compute the RMSE later
   Tools tools;
