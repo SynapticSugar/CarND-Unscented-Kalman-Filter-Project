@@ -3,7 +3,7 @@ Self-Driving Car Engineer Nanodegree Program
 
 ## Introduction
 
-In this project utilize an Unscented Kalman Filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining RMSE values that are lower that the tolerance outlined in the project rubric. 
+In this project we utilize an Unscented Kalman Filter to estimate the state of a moving object of interest with noisy LIDAR and RADAR measurements. Passing the project requires obtaining RMSE values that are lower that the tolerance outlined in the project rubric. 
 
 ## Installation
 
@@ -73,7 +73,7 @@ The following settings were used:
 
 ### Code Style
 
-This projetc follows the [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
+This project follows the [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
 
 ## Accuracy
 
@@ -93,14 +93,14 @@ It can be seen that the RMSE met the criteria on ```Dataset 2``` with px, py, vx
 
 ## Follows the Correct Algorithm
 
-The code uses fuses an Unscented Kalman Filter (UKF) with a traditional Kalman filter (KF) with the Constant Turn Rate and Velocity Magnitude (CTRV) model for object tracking.
+The code fuses an Unscented Kalman Filter (UKF) with a traditional Kalman filter (KF) with the Constant Turn Rate and Velocity Magnitude (CTRV) model for object tracking.
 
-The first step is to initialize the state and covariance matrix upon recieving the first measurement.  If it is a LIDAR sensor, it plugs the x,y position measurement directly in as the starting point.  Velocity, turn angle and rate are unknown and are arbitrarily set to zero.  If it is a RADAR measurement, the x,y position data obtained by transforming from polar coordinates to cartesian.  As in the LIDAR case, the velocity, turn angle, and turn rate are arbitrarily set to zero as we cannot know this from one measurement alone.
+The first step is to initialize the state and covariance matrix upon receiving the first measurement.  If it is a LIDAR sensor, it plugs the x,y position measurement directly in as the starting point.  Velocity, turn angle and rate are unknown and are arbitrarily set to zero.  If it is a RADAR measurement, the x,y position data obtained by transforming from polar coordinates to cartesian.  As in the LIDAR case, the velocity, turn angle, and turn rate are arbitrarily set to zero as we cannot know this from one measurement alone.
 
-The second step is to predict the new state and process convariance when a new sensor reading comes in.  It does matter if it is a LIDAR or a RADAR measurement.  This process is the same. The prediction step has three main steps: Generate Sigma points, Predict Sigma points, and Predict the Mean and Covariance.
+The second step is to predict the new state and process convariance when a new sensor reading comes in.  It does not matter if it is a LIDAR or a RADAR measurement as the process is the same. The prediction step has three main steps: Generate Sigma points, Predict Sigma points, and Predict the Mean and Covariance.
 
-The third and final step is to update the final state estimate which is different between LIDAR and RADAR.  This happens in two steps: Predict the new Measurement and Update the State.
-Since the LIDAR is a linear measurement and can be represented by a Gaussian distribution we process this with the standard Kalman Filter method. Since the RADAR is a non-linear measurement, it can make use of the Sigma points generated in the previous prediction step to cast into measurement space following the traditional UKF procedure.  The NIS is calculated for both the KF and UKF update steps.
+The third and final step is to update the final state estimate which is different between LIDAR and RADAR.  This happens in two steps: Predict the new measurement and update the State.
+Since the LIDAR is a linear measurement and can be represented by a Gaussian distribution, we process this with the standard Kalman Filter method. Since the RADAR is a non-linear measurement, we can make use of the Sigma points generated in the previous prediction step to cast them into measurement space following the traditional UKF procedure.  The Normalized Innovation Squared value (NIS) is calculated for both the KF and UKF update steps.
 
 The process flow diagram is shown below:
 
@@ -110,15 +110,15 @@ The process flow diagram is shown below:
 
 Several methods are used to maintain code effeciency.  Creating and destroying matricies takes time.  When calling functions and setting matrix structures up, matrices are passed in by reference instead of by value.  This reduces function call overhead as only one value needs to be copied instead of a full data structure.
 
-Another possible speedup was using the generic Kalman Filter to update the LIDAR measurement instead of usign an Unscented Kalman Filter.  Since the LIDAR measurment is linear, there is no need to use Sigma points, although they would have worked, it is simply unessesary work to do.
+Another possible speedup was using the generic Kalman Filter to update the LIDAR measurement instead of using an Unscented Kalman Filter.  Since the LIDAR measurment is linear, there is no need to use Sigma points, although they would have worked, it is simply unecessesary work to do.
 
 ## Other Considerations
 
 ### Process Noise
 
-The process noise for the bicycle was provided, but was known to be innacurate.  An important part of predicting the expected state of the tracked object is having a good idea of process model noise as this affects our certainty and error bounds in the Kalman Filter prediction.  To understand the effect our estimate of standard deviation of the acceleration yaw rate of the bicycle is compared with the average RMSE of the predicted state and ground truth at every step.
+The process noise for the bicycle, 30, was provided but this was expected to be highly innacurate.  An important part of predicting the expected state of the tracked object is having a good idea of process model noise as this affects our certainty and error bounds in the Kalman Filter prediction.  To understand the effect, our estimate of standard deviation of the acceleration yaw rate of the bicycle is compared with the average RMSE of the predicted state and ground truth at every step.
 
-The sensitivity chart below outlines the results of changing both these values simultaneously:
+The sensitivity chart below shows the RMSE dependance on both yaw rate and acceleration noise:
 
 ![alt text](./rmse_sensitivity.png "RMSE Sensitivity Chart")
 
@@ -138,7 +138,7 @@ Both plots show that noise parameters of 0.7 and 1.0 for standard yaw rate and a
 
 ### Accuracy
 
-It is interesting to note that the UKF was much better at predicting the state of the bicycle than the EKF as shown inthe table below:
+It is interesting to note that the UKF was much better at predicting the state of the bicycle than the EKF as shown in the table below:
 
 | Value | EKF | UKF |
 |-------|-----|-----|
@@ -147,7 +147,7 @@ It is interesting to note that the UKF was much better at predicting the state o
 | Vx    | 0.4513 | 0.3579 |
 | Vy    | 0.4399 | 0.1970 |
 
-This is expected because the Sigma points do a better job at representing the gaussian distribution than using a Tayler series approximation and throwing out the higher order terms.  The Sigma points capture a more complete picture.
+This is expected because the Sigma points do a better job at representing the Gaussian distribution than using a Tayler Series approximation and throwing out the higher order terms.  The Sigma points capture a more complete picture.
 
 The sensor fusion of both lidar and radar actually creates a better estimate and achieved lower RMS error than if either was run independantly as shown in the following results performed on ```Dataset 1```.
 
